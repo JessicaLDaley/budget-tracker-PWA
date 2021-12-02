@@ -1,9 +1,9 @@
 let db;
-// create a new db request for budget database.
+// create a new db request for budget db.
 const request = indexedDB.open("budget", 1);
 
 request.onupgradeneeded = function(event) {
-   // create object store called "pending" and set autoIncrement to true
+   // create object store and set autoIncrement to true
   const db = event.target.result;
   db.createObjectStore("pending", { autoIncrement: true });
 };
@@ -21,7 +21,17 @@ request.onerror = function(event) {
   console.log("Error! " + event.target.errorCode);
 };
 
-
+function saveRecord(record) {
+    // create a transaction on the pending db with readwrite access
+    const transaction = db.transaction(["pending"], "readwrite");
+  
+    // access your pending object store
+    const store = transaction.objectStore("pending");
+  
+    // add record to your store with add method.
+    store.add(record);
+  }
+  
 
 // listen for app coming back online
 window.addEventListener("online", checkDatabase);
